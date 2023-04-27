@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #an automation for the conventional 
 # method of measuring the Stack
 #
@@ -25,7 +27,7 @@ with open('su.txt') as f:
 		d.append(c.split('\t')[0])	# function name
 		e.append(c.split('\t')[1])	# stack size
 
-stack_tab = dict(zip(d,e))
+stack_tab = dict(list(zip(d,e)))
 # print stack_tab
 
 intend = 0
@@ -34,7 +36,7 @@ with open('callstack.txt') as log:
 	fun=[]
 	for lines in log:		
 		intend=len(lines) - len(lines.lstrip())
-		intend = intend/4
+		intend = int(intend/4)
 		if(intend1 < intend):
 			fun.append(lines.lstrip().split(' ')[0].rstrip().split('()')[0])
 			intend1 = intend
@@ -45,21 +47,25 @@ with open('callstack.txt') as log:
 			intend1 = intend
 		else :
 			calls.append(fun[:])
-			for i in xrange (intend1, intend-1, -1):				
+			for i in range (intend1, intend-1, -1):				
 				del fun[i]
 			fun.append(lines.lstrip().split(' ')[0].rstrip().split('()')[0])
 			intend1 = intend
 
-maxstack = 0;
+maxstack = 0
 
+RL = []
 for items in calls:
-	stack = 0;
+	stack = 0
 	for funcs in items:
 		stack = stack + int(stack_tab.get(funcs,0))
-	print items 
-	print stack 	
-			
-			
-			
-			
-		
+	RL.append((stack,items))
+	
+RL.sort(reverse=True)
+
+for aRL in RL:
+	stack, items = aRL
+	print(stack,end='')
+	print('/',end='')
+	print(items)
+	
